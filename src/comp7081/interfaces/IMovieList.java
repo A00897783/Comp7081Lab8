@@ -10,4 +10,6 @@ package comp7081.interfaces;
 public interface IMovieList {
 	public int size();
 	public String add(IMovie movie);
+	public String modifyName(int index, String newName);
+	public String getMovieName(int index);
 }

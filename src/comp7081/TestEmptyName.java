@@ -1,5 +1,5 @@
 /**
- *
+ * 
  */
 package comp7081;
 
@@ -18,25 +18,29 @@ import comp7081.interfaces.IMovieList;
  */
 
 public class TestEmptyName extends TestCase {
-    private Movie movie;
-    
-    @Before
-    public void setUp() {
-        movie = new Movie();
-        
-    }
-    
-    @Test
-    public void testName() {
-        
-        movie.setName("StarWars");
-        assertEquals("Movie name cannot be empty.","FAIL", movie.setName(""));
-        assertEquals("Movie name cannot be empty.","FAIL", movie.setName(null));
-        assertEquals("Movie name cannot be empty.","OK", movie.setName("StarWars"));
-        
-    }
-    
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(TestEmptyName.class);
-    }
+	 private IMovie movieMock;
+
+	 @Before
+	 public void setUp() {
+		 movieMock = EasyMock.createMock(IMovie.class);
+	 }
+	 
+	 @Test
+	 public void testName() {
+		 
+		EasyMock.expect(movieMock.setName("StarWars")).andReturn("OK");
+		EasyMock.expect(movieMock.setName(null)).andReturn("FAIL");
+		EasyMock.expect(movieMock.setName("")).andReturn("FAIL");
+
+		
+		EasyMock.replay(movieMock);
+		
+		assertEquals("Movie name cannot be empty.","FAIL", movieMock.setName(null));
+		assertEquals("Movie name cannot be empty.","FAIL", movieMock.setName(""));
+		assertEquals("Movie name cannot be empty.","OK", movieMock.setName("StarWars"));
+	 }
+	 
+		public static void main(String[] args) {
+			junit.textui.TestRunner.run(TestEmptyName.class);
+		}
 }

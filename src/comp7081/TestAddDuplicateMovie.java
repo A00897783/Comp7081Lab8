@@ -1,5 +1,5 @@
 /**
- *
+ * 
  */
 package comp7081;
 
@@ -18,28 +18,33 @@ import comp7081.interfaces.IMovieList;
  */
 
 public class TestAddDuplicateMovie extends TestCase {
-    private MovieList movieList;
-    private Movie movie;
-    
-    @Before
-    public void setUp() {
-        movie = new Movie();
-        movieList = new MovieList();
-    }
-    
-    @Test
-    public void testName() throws Exception {
-        movie.setName("StarWars");
-        assertEquals("Size of movie list should be 0.", 0, movieList.size());
-        movieList.add(movie);
-        assertEquals("Size of movie list should be 1.", 1, movieList.size());
-        assertEquals("Cannot add duplicate movie.","FAIL", movieList.add(movie));
-        assertEquals("Size of movie list should be 1.", 1, movieList.size());
-        
-    }
-    
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(TestAddDuplicateMovie.class);
-    }
+	 private IMovie movieMock;
+	 private IMovieList movieListMock;
+	 
+	 @Before
+	 public void setUp() {
+		 movieMock = EasyMock.createMock(IMovie.class);
+		 movieListMock = EasyMock.createMock(IMovieList.class);
+	 }
+	 
+	 @Test
+	 public void testName() throws Exception {
+		EasyMock.expect(movieListMock.add(movieMock)).andReturn("OK");
+		EasyMock.expect(movieListMock.add(movieMock)).andThrow(new RuntimeException("Duplicate movies not allowed"));
+		EasyMock.replay(movieListMock);
+		assertEquals("Add a movie to the list. Should get OK", "OK",movieListMock.add(movieMock));
+		boolean exceptionThrown = false;
+		try{
+			movieListMock.add(movieMock);
+		}catch (Exception e) {
+			exceptionThrown = true;
+		}
+		assertEquals("The exception should be true", true, exceptionThrown);
+
+	 }
+
+	public static void main(String[] args) {
+		junit.textui.TestRunner.run(TestAddDuplicateMovie.class);
+	}
 }
 

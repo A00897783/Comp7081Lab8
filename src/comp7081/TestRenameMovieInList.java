@@ -18,35 +18,37 @@ import comp7081.interfaces.IMovieList;
  */
 
 public class TestRenameMovieInList extends TestCase {
-	 private MovieList movieList;
-	 private Movie movie;
-	 private Movie movie2;
-	 
+	 private IMovie movieMock;
+	 private IMovieList movieListMock; 
+
 	 @Before
 	 public void setUp() {
-		 movie = new Movie();
-		 movie2 = new Movie();
-		 movieList = new MovieList();
+		 movieMock = EasyMock.createMock(IMovie.class);
+		 movieListMock = EasyMock.createMock(IMovieList.class);
 	 }
 	 
 	 @Test
-	 public void testName() throws Exception {
-		movie.setName("StarWars");
-		movie2.setName("StarWars3");
-		movieList.add(movie);
-		movieList.add(movie2);
-		assertEquals("The name should be StarWars", "StarWars", movieList.getMovieName(0));
-		assertEquals("Cannot rename movie to empty movie name.","FAIL", movieList.renameMovie(0, ""));
-		assertEquals("Cannot rename movie to empty movie name.","FAIL", movieList.renameMovie(0, null));
-		assertEquals("The name should be StarWars3","StarWars3", movieList.getMovieName(1));
-		assertEquals("Cannot rename movie to existing movie name.","FAIL", movieList.renameMovie(0, "StarWars3"));
-		movieList.renameMovie(0, "StarWars2");
-		assertEquals("The name should be StarWars2","StarWars2", movieList.getMovieName(0));
+	 public void testName() {
+		
+		EasyMock.expect(movieMock.setName("StarWars")).andReturn("OK");
+		EasyMock.expect(movieListMock.add(movieMock)).andReturn("OK");
+		EasyMock.expect(movieListMock.getMovieName(0)).andReturn("StarWars");
+		EasyMock.expect(movieListMock.modifyName(0, "Hobbit")).andReturn("OK");
+		EasyMock.expect(movieListMock.getMovieName(0)).andReturn("Hobbit");
 
+		
+		EasyMock.replay(movieMock);
+		EasyMock.replay(movieListMock);
+		
+		
+		assertEquals("The movie name is set. Should be OK.","OK",movieMock.setName("StarWars"));
+		assertEquals("The movie is added. Should be OK","OK",movieListMock.add(movieMock));
+		assertEquals("The movie name on index 0 should be StarWars","StarWars", movieListMock.getMovieName(0));
+		assertEquals("The movie name should be modified and the name should be Hobbit","OK", movieListMock.modifyName(0, "Hobbit"));
+		assertEquals("The movie name on index 0 should be now Hobbit","Hobbit", movieListMock.getMovieName(0));
 	 }
-
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(TestRenameMovieInList.class);
-	}
+	 
+		public static void main(String[] args) {
+			junit.textui.TestRunner.run(TestEmptyName.class);
+		}
 }
-
